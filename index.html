@@ -1,0 +1,71 @@
+<canvas id="gc" width="400" height="400"></canvas>
+<script>
+    window.onload = function () {
+        c = document.getElementById("gc");
+        context = c.getContext("2d");
+        document.addEventListener("keydown", keyPush);
+        setInterval(game, 1000 / 15);
+    }
+    xPos = yPos = 10;
+    xVel = yVel = 0;
+    gridSize = tiles = 20;
+    goalX = goalY = 15;
+    trail = [];
+    tail = 5;
+    function game() {
+        xPos += xVel;
+        yPos += yVel;
+        if (xPos < 0) {
+            xPos = tiles - 1;
+        }
+        if (yPos < 0) {
+            yPos = tiles - 1;
+        }
+        if (xPos > tiles - 1) {
+            xPos = 0;
+        }
+        if (yPos > tiles - 1) {
+            yPos = 0;
+        }
+        context.fillStyle = "black";
+        context.fillRect(0, 0, c.width, c.height);
+
+        context.fillStyle = "lime";
+        for (var i = 0; i < trail.length; i++) {
+            context.fillRect(trail[i].x * gridSize, trail[i].y * gridSize, gridSize - 2, gridSize - 2);
+            if ((trail[i].x == xPos) && (trail[i].y == yPos)) {
+                tail = 5;
+            }
+        }
+        trail.push({ x: xPos, y: yPos });
+        while (trail.length > tail) {
+            trail.shift();
+        }
+        if ((goalX == xPos) && (goalY == yPos)) {
+            tail++;
+            goalX = Math.floor(Math.random() * tiles);
+            goalY = Math.floor(Math.random() * tiles);
+        }
+
+
+
+        context.fillStyle = "red";
+        context.fillRect(goalX * gridSize, goalY * gridSize, gridSize - 2, gridSize - 2);
+    }
+    function keyPush(evt) {
+        switch (evt.keyCode) {
+            case 37://left
+                xVel = -1; yVel = 0;
+                break;
+            case 38://up
+                xVel = 0; yVel = -1;
+                break;
+            case 39://right
+                xVel = 1; yVel = 0;
+                break;
+            case 40://down
+                xVel = 0; yVel = 1;
+                break;
+        }
+    }
+</script>
